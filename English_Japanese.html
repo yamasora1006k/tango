@@ -1,0 +1,267 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>英単語反復練習装置</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+      }
+      #wordDisplay {
+        font-size: 32px;
+        margin: 20px 0;
+      }
+      .buttons {
+        display: flex;
+        justify-content: center;
+      }
+      .button {
+        font-size: 16px;
+        padding: 5px 15px;
+        margin: 0 10px;
+      }
+      #timeInputContainer {
+        margin-top: 10px;
+      }
+      #timeInput {
+        font-size: 16px;
+        padding: 5px;
+        margin-right: 10px;
+      }
+      .favorite_styled{
+        position: absolute;
+        top: 0;
+        right: 0;
+            margin: 10px; /* Optional: To add some margin */
+            padding: 10px;
+            background-color: lightblue;
+            border: 1px solid blue; /* For visualization */
+      }
+    </style>
+    <script>
+      class Word {
+        constructor(english, japanese) {
+          this.english = english;
+          this.japanese = japanese;
+          this.displayLanguage = "english";
+        }
+
+        getWord() {
+          let word =
+            this.displayLanguage === "english" ? this.english : this.japanese;
+          this.displayLanguage =
+            this.displayLanguage === "english" ? "japanese" : "english";
+          return word;
+        }
+      }
+
+      class App {
+  constructor() {
+    this.words = [
+      new Word("human-wildlife conflict", "野生動物と人間の衝突"),
+      new Word("definitely", "当然、絶対"),
+      new Word("interact with ~", "~と関わりあう"),
+      new Word("more than ever", "今までよりも・これまで以上"),
+      new Word("habitat", "生息地"),
+      new Word("region", "地域"),
+      new Word("disappear", "消える・消滅する"),
+      new Word("once", "(接)一旦~したら"),
+      new Word("behavior", "行動、態度、振る舞い"),
+      new Word("limit the access to ~", "~へのアクセス(利用・出入り)を制限する"),
+      new Word("keep ~ away from …", "~を...から遠ざける"),
+      new Word("frighten~ away", "~を脅して遠ざける"),
+      new Word("mistreat", "虐待する"),
+      new Word("avoid", "避ける"),
+      new Word("treat", "(v) 扱う (n) ごほうび"),
+      new Word("sniff", "においをかぐ"),
+      new Word("landmine", "地雷"),
+      new Word("valuable", "貴重な"),
+      new Word("domestic", "家庭の、人に慣れた"),
+      new Word("chemical", "化学物質"),
+      new Word("certain", "ある"),
+      new Word("disease", "病気"),
+      new Word("laboratory test", "臨床試験(検査)"),
+      new Word("practical", "実用的な"),
+      new Word("psychological", "心理的な"),
+      new Word("affect", "影響する"),
+      new Word("prefer", "~をより好む"),
+      new Word("fit in with ~", "~に溶け込む、なじむ"),
+      new Word("take responsibility for ~", "~の責任をとる"),
+      new Word("do our part", "私たちの責任を果たす"),
+      new Word("synthetic", "合成の、人工的な"),
+      new Word("toxic chemical", "有毒化学物質"),
+      new Word("manufacture", "n. 製造 v.製造する"),
+      new Word("overhear", "ふと耳にする"),
+      new Word("give away", "譲る"),
+      new Word("purchase", "購入する"),
+      new Word("give back", "返す、還元する"),
+      new Word("feed", "食べ物を与える"),
+      new Word("reflect", "映す、示す、内省する"),
+      new Word("belief", "信念、考え、意見"),
+      new Word("donate", "寄付する"),
+      new Word("profit", "n. 利益 v.利益を上げる"),
+      new Word("creature(s)", "生物"),
+      new Word("appearance", "見た目"),
+      new Word("go rotten", "腐る"),
+      new Word("landfill", "埋め立て地、ごみ廃棄場"),
+      new Word("statistic", "統計値"),
+      new Word("food waste", "食品廃棄物"),
+      new Word("nutritious", "栄養価が高い"),
+      new Word("produce", "農産物"),
+      new Word("think twice", "熟考する、よく考える"),
+      new Word("edible", "食べられる"),
+      new Word("chances are S V", "おそらく~だろう"),
+      new Word("even if S’ V’", "たとえ~でも"),
+      new Word("worth ~", "~に値する"),
+      new Word("although S’ V’", "~だけれども"),
+      new Word("rush", "急ぐ"),
+      new Word("so that S’ can ~", "S’が~できるように"),
+      new Word("involve", "巻き込む"),
+      new Word("make decisions", "決定する"),
+      new Word("compost", "たい肥にする"),
+      new Word("combine", "~を混ぜ合わせる"),
+      new Word("include", "~を含む"),
+      new Word("electronic", "電子の、電子で動く"),
+      new Word("equipment", "設備、装置、機材"),
+      new Word("edit", "編集する"),
+      new Word("traditional", "伝統的な"),
+      new Word("urban", "都市の、都会風の"),
+      new Word("Some ~ . Others …", "~な人もいれば...な人もいる。"),
+      new Word("feast", "ごちそう、祝宴"),
+      new Word("imitate", "まねる、模範とする"),
+      new Word("landscape", "景観・景色"),
+      new Word("leafy", "葉の多い、緑の多い"),
+      new Word("bunch", "房・束"),
+      new Word("out of ~", "~の中から、~から作り出して"),
+      new Word("portrait", "肖像画"),
+      new Word("after", "~のあとで、~にちなんで"),
+      new Word("pea pod", "豆のさや"),
+      new Word("eyelid", "まぶた"),
+      new Word("spend time on ~", "~に時間を費やす"),
+      new Word("incredible", "信じられない"),
+      new Word("mobile", "adj:可動性の　noun: 携帯電話"),
+      new Word("gadget", "道具・装置"),
+      new Word("search for", "~を探す"),
+      new Word("look up", "調べる"),
+      new Word("text", "テキストメッセージ"),
+      new Word("probably", "十中八九は、たぶん"),
+      new Word("trillion", "1兆"),
+      new Word("device", "機器、装置"),
+      new Word("think outside the box", "既成概念にとらわれずに物事を考える"),
+      new Word("remarkable", "卓越した、目立った"),
+      new Word("take ~ for example", "~を例にとる"),
+      new Word("fourteen-year-old", "14歳の(形容詞)"),
+      new Word("suffer from ~", "~に苦しむ"),
+      new Word("award-winning", "賞を取った、受賞歴のある"),
+      new Word("allow O to do ~", "Oが~することを許可する、可能にする"),
+      new Word("treat", "ご褒美、おやつ"),
+      new Word("grateful", "感謝している"),
+      new Word("be tired of ~", "~に飽きる"),
+      new Word("come up with ~", "~を思いつく")
+    ];
+
+          this.currentIndex = 0;
+          this.isAutoPlay = false;
+          this.intervalTime = 2000; // デフォルトは2秒
+          this.displayWord();
+        }
+
+        displayWord() {
+          document.getElementById("wordDisplay").innerText =
+            this.words[this.currentIndex].getWord();
+          if (this.words[this.currentIndex].displayLanguage === "english") {
+            this.currentIndex = (this.currentIndex + 1) % this.words.length;
+          }
+        }
+
+        nextWord() {
+          this.displayWord();
+        }
+
+        prevWord() {
+          this.currentIndex =
+            (this.currentIndex - 2 + this.words.length * 2) % this.words.length;
+          this.words[this.currentIndex].displayLanguage = "english";
+          this.displayWord();
+        }
+
+        toggleAutoPlay() {
+          if (this.isAutoPlay) {
+            this.stopAutoPlay();
+          } else {
+            this.startAutoPlay();
+          }
+        }
+
+        startAutoPlay() {
+          this.isAutoPlay = true;
+          document.getElementById("auto").innerText = "ストップ";
+          this.autoPlayInterval = setInterval(
+            () => this.nextWord(),
+            this.intervalTime
+          );
+        }
+
+        stopAutoPlay() {
+          clearInterval(this.autoPlayInterval);
+          this.isAutoPlay = false;
+          document.getElementById("auto").innerText = "オート";
+        }
+
+        updateIntervalTime() {
+          const timeInput = parseFloat(
+            document.getElementById("timeInput").value
+          );
+          if (!isNaN(timeInput) && timeInput > 0) {
+            this.intervalTime = timeInput * 1000; // 秒数をミリ秒に変換
+            if (this.isAutoPlay) {
+              this.stopAutoPlay();
+              this.startAutoPlay();
+            }
+          }
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const app = new App();
+
+        document
+          .getElementById("prev")
+          .addEventListener("click", () => app.prevWord());
+        document
+          .getElementById("next")
+          .addEventListener("click", () => app.nextWord());
+        document
+          .getElementById("auto")
+          .addEventListener("click", () => app.toggleAutoPlay());
+        document
+          .getElementById("execute")
+          .addEventListener("click", () => app.updateIntervalTime());
+      });
+    </script>
+  </head>
+  <body>
+    <button class="favorite_styled" type="button"><a href="Japanese_English.html">日 -> 英</a></button>
+    <span>英 → 日</span>
+    <div id="wordDisplay"></div>
+    <div class="buttons">
+      <button id="prev" class="button">戻る</button>
+      <button id="next" class="button">次へ</button>
+      <button id="auto" class="button">オート</button>
+    </div>
+    <div id="timeInputContainer">
+      <input
+        type="number"
+        id="timeInput"
+        step="0.1"
+        placeholder="秒数を入力（例: 2）" />
+      <button id="execute" class="button">実行</button>
+    </div>
+  </body>
+</html>
